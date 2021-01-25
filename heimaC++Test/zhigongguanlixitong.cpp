@@ -56,8 +56,10 @@ void func()
 			wm.addEmp();
 			break;
 		case 2:	// 显示员工
+			wm.showEmpInfo();
 			break;
 		case 3:	// 删除员工
+			wm.delEmpInfo();
 			break;
 		case 4:	// 修改员工
 			break;
