@@ -51,8 +51,16 @@ WorkerManager::WorkerManager() :m_empNum(0), m_empArray(NULL), m_fileIsEmpty(fal
 
 WorkerManager::~WorkerManager() 
 {
+	// 需要先释放二级指针
 	if (this->m_empArray != NULL)
 	{
+		// 释放二级指针
+		for (int i = 0; i < this->m_empNum; i++)
+		{
+			delete this->m_empArray[i];
+			this->m_empArray[i] = NULL;
+		}
+		// 释放一级指针
 		delete[] this->m_empArray;
 		this->m_empArray = NULL;
 	}
@@ -175,7 +183,8 @@ void WorkerManager::addEmp()
 
 			// 将新职工保存到新数组中
 			newEmpArray[this->m_empNum + i] = worker;
-			// delete worker;
+			// 更新文件不为空的标志
+			this->m_fileIsEmpty = false;
 		}
 
 		// 释放原有空间
@@ -189,9 +198,6 @@ void WorkerManager::addEmp()
 
 		// 保存数据到本地
 		this->save();
-
-		// 更新文件不为空的标志
-		this->m_fileIsEmpty = false;
 
 		// 提示
 		cout << "成功添加 " << addNum << " 名新职工" << endl;
