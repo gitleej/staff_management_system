@@ -65,6 +65,7 @@ void func()
 			wm.modEmpInfo();
 			break;
 		case 5:	// 查找员工
+			wm.findEmpInfo();
 			break;
 		case 6:	// 排序员工
 			break;

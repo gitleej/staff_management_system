@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 // 宏定义结果保存位置
 #define FILENAME "empInfo.txt"
@@ -49,9 +50,13 @@ public:
 
   // 判断职工是否存在
   int isEmpExist(int id);		// 通过ID判断
+  int isEmpExist(string name, vector<int> &dstIndex);	// 通过姓名查找
 
   // 修改职工信息
   void modEmpInfo();
+
+  // 查找员工信息
+  void findEmpInfo();
 
 private:
   // 记录文件中的人数

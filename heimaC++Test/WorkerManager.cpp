@@ -132,8 +132,21 @@ void WorkerManager::addEmp()
 			string name;	// 职工姓名
 			int departId;	// 部门id
 
-			cout << "请输入第（" << i + 1 << ")个新职工的员工编号：" << endl;
-			cin >> id;
+			while (true)
+			{
+				cout << "请输入第（" << i + 1 << ")个新职工的员工编号：" << endl;
+				cin >> id;
+
+				if (isEmpExist(id) == -1)
+				{
+					break;
+				}
+				else
+				{
+					cout << "该职工编号已存在，请重新输入。" << endl;
+				}
+			}
+			
 			cout << "请输入第（" << i + 1 << ")个新职工的员工姓名：" << endl;
 			cin >> name;
 			cout << "请选择第（" << i + 1 << ")个新职工的岗位："
@@ -365,6 +378,39 @@ int WorkerManager::isEmpExist(int id)
 	return index;
 }
 
+// 按姓名查找
+int WorkerManager::isEmpExist(string name, vector<int>& dstIndex)
+{
+	bool flag = false;
+	int index = -1;
+	// 检查是否存在职工信息
+	if (this->m_fileIsEmpty)
+	{
+		cout << "不存在职工信息" << endl;
+		return index;
+	}
+
+	for (int i = 0; i < this->m_empNum; i++)
+	{
+		if (this->m_empArray[i]->m_name == name)
+		{
+			dstIndex.push_back(i);
+			flag = true;
+		}
+	}
+
+	// 检查是否查找到
+	if (flag)
+	{
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+// 修改职工信息
 void WorkerManager::modEmpInfo()
 {
 	if (this->m_fileIsEmpty)
@@ -390,29 +436,136 @@ void WorkerManager::modEmpInfo()
 			int newDepartId;
 			while (true)
 			{
-				cout << "请输入新员工编号：" << endl;
+				cout << "查到："<< id <<" 职工，请输入职工新编号：" << endl;
 				cin >> newId;
 				// 检查id是否重复
 				if (this->isEmpExist(newId) == -1)
 				{
-					this->m_empArray[index]->m_Id = newId;
 					break;
 				}
 				else
 				{
-					cout << "该员工编号已存在，请重新输入。" << endl;
+					cout << "该职工编号已存在，请重新输入。" << endl;
 				}
 			}
 
-			cout << "请输入新员工姓名：" << endl;
+			cout << "请输入职工姓名：" << endl;
 			cin >> newName;
-			this->m_empArray[index]->m_name = newName;
-			// TODO:
+			
+			cout << "请选择职工的岗位："
+				<< "\n1.普通员工"
+				<< "\n2.经理"
+				<< "\n3.老板" << endl;
+			cin >> newDepartId;
+
+			Worker * worker = NULL;
+			// 选择分支
+			switch (newDepartId)
+			{
+			case 1:	// 普通职工
+				worker = new Employee(newId, newName, newDepartId);
+				break;
+			case 2:	// 经理
+				worker = new Manager(newId, newName, newDepartId);
+				break;
+			case 3:	// 老板
+				worker = new Boss(newId, newName, newDepartId);
+				break;
+			default:
+				break;
+			}
+			// 更新数据到数组中
+			this->m_empArray[index] = worker;
+
+			// 更新到文件
+			this->save();
+
+			// 提示
+			cout << "修改成功！" << endl;
 		}
 		else
 		{
 			// 查无此人
-			cout << "未找到编号为 " << id << " 的职工信息" << endl;
+			cout << "未找到编号为 " << id << " 的职工信息，修改失败" << endl;
+		}
+	}
+
+	system("pause");
+	system("cls");
+}
+
+// 查找员工信息
+void WorkerManager::findEmpInfo()
+{
+	// 检查是否存在职工信息
+	if (this->m_fileIsEmpty)
+	{
+		cout << "不存在职工信息" << endl;
+	}
+	else
+	{
+		// 查找方式
+		int findType = -1;
+		while (true)
+		{
+			cout << "请选择查找方式：\n"
+				<< "1.按编号查找\n"
+				<< "2.按姓名查找" << endl;
+			cin >> findType;
+
+			if (findType == 1 || findType == 2)
+			{
+				break;
+			}
+			else
+			{
+				cout << "查找方式选择错误，请重新选择查找方式。" << endl;
+			}
+		}
+		
+		// 分支选择
+		switch (findType)
+		{
+		case 1:	// 按编号查找
+		{
+			cout << "请输入需查找职工编号：" << endl;
+			int id = -1;
+			cin >> id;
+
+			int index = this->isEmpExist(id);
+			if (index != -1)
+			{
+				this->m_empArray[index]->showInfo();
+			}
+			else
+			{
+				cout << "未找到编号为 " << id << " 的职工信息" << endl;
+			}
+
+			break;
+		}
+		case 2:
+		{
+			cout << "请输入需查找职工姓名：" << endl;
+			string name;
+			cin >> name;
+
+			vector<int> result;
+			int ret = isEmpExist(name, result);
+			if (ret != -1)
+			{
+				for (auto it = result.begin(); it != result.end(); it++)
+				{
+					this->m_empArray[*it]->showInfo();
+				}
+			}
+			else
+			{
+				cout << "未找到姓名为 " << name << " 的职工信息" << endl;
+			}
+		}
+		default:
+			break;
 		}
 	}
 
