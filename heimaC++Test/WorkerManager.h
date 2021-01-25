@@ -50,6 +50,9 @@ public:
   // 判断职工是否存在
   int isEmpExist(int id);		// 通过ID判断
 
+  // 修改职工信息
+  void modEmpInfo();
+
 private:
   // 记录文件中的人数
   int m_empNum;

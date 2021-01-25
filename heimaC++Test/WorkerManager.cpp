@@ -364,3 +364,58 @@ int WorkerManager::isEmpExist(int id)
 
 	return index;
 }
+
+void WorkerManager::modEmpInfo()
+{
+	if (this->m_fileIsEmpty)
+	{
+		cout << "不存在职工信息" << endl;
+	}
+	else
+	{
+		// 按照编号修改员工信息
+		cout << "请输入需要修改职工的编号：" << endl;
+		int id = -1;	// 待修改职工id
+		cin >> id;		// 接收输入
+		
+		int index = this->isEmpExist(id);
+		if (index != -1)
+		{
+			// 正确找到员工编号
+			// 清除原始信息
+			delete this->m_empArray[index];
+
+			int newId;
+			string newName;
+			int newDepartId;
+			while (true)
+			{
+				cout << "请输入新员工编号：" << endl;
+				cin >> newId;
+				// 检查id是否重复
+				if (this->isEmpExist(newId) == -1)
+				{
+					this->m_empArray[index]->m_Id = newId;
+					break;
+				}
+				else
+				{
+					cout << "该员工编号已存在，请重新输入。" << endl;
+				}
+			}
+
+			cout << "请输入新员工姓名：" << endl;
+			cin >> newName;
+			this->m_empArray[index]->m_name = newName;
+			// TODO:
+		}
+		else
+		{
+			// 查无此人
+			cout << "未找到编号为 " << id << " 的职工信息" << endl;
+		}
+	}
+
+	system("pause");
+	system("cls");
+}

@@ -62,6 +62,7 @@ void func()
 			wm.delEmpInfo();
 			break;
 		case 4:	// 修改员工
+			wm.modEmpInfo();
 			break;
 		case 5:	// 查找员工
 			break;
