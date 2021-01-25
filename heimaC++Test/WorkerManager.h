@@ -58,6 +58,12 @@ public:
   // 查找员工信息
   void findEmpInfo();
 
+  // 排序员工信息
+  void sortEmpInfo();
+
+  // 清空所有信息
+  void claenAllInfo();
+
 private:
   // 记录文件中的人数
   int m_empNum;

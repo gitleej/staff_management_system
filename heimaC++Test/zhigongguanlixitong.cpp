@@ -68,8 +68,10 @@ void func()
 			wm.findEmpInfo();
 			break;
 		case 6:	// 排序员工
+			wm.sortEmpInfo();
 			break;
 		case 7:	// 清空文件
+			wm.claenAllInfo();
 			break;
 		default:// 刷新屏幕
 			system("cls");

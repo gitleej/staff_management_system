@@ -572,3 +572,118 @@ void WorkerManager::findEmpInfo()
 	system("pause");
 	system("cls");
 }
+
+// 排序员工信息
+void WorkerManager::sortEmpInfo()
+{
+	// 检查是否存在职工信息
+	if (this->m_fileIsEmpty)
+	{
+		cout << "不存在职工信息" << endl;
+		system("pause");
+		system("cls");
+	}
+	else
+	{
+		int sortType = -1;
+		while (true)
+		{
+			cout << "请选择排序方式：\n"
+				<< "1.升序\n"
+				<< "2.降序" << endl;
+			cin >> sortType;
+			if (sortType == 1 || sortType == 2)
+			{
+				break;
+			}
+			else
+			{
+				cout << "排序方式选择错误，请重新输入" << endl;
+			}
+		}
+
+		// 利用选择排序算法进行排序
+		for (int i = 0; i < m_empNum; i++)
+		{
+			// 选则最大值或最小值
+			int minOrMax = i;
+			for (int j = i+1; j < m_empNum; j++)
+			{
+				if (sortType == 1)	// 升序
+				{
+					if (this->m_empArray[minOrMax]->m_Id > this->m_empArray[j]->m_Id)
+					{
+						minOrMax = j;
+					}
+				}
+				else // 降序
+				{
+					if (this->m_empArray[minOrMax]->m_Id < this->m_empArray[j]->m_Id)
+					{
+						minOrMax = j;
+					}
+				}
+				if (i != minOrMax)
+				{
+					Worker *temp = this->m_empArray[i];
+					this->m_empArray[i] = this->m_empArray[minOrMax];
+					this->m_empArray[minOrMax] = temp;
+				}
+			}
+		}
+
+		// 更新结果到本地
+		this->save();
+		
+		// 显示排序结果
+		this->showEmpInfo();
+	}
+}
+
+// 清空所有信息
+void WorkerManager::claenAllInfo()
+{
+	cout << "确认清空所有职工信息？\n"
+		<< "0.取消"
+		<< "1.确认" << endl;
+	bool confirm = false;
+	cin >> confirm;
+
+	if (confirm)
+	{
+		// 删除原文件并新建
+		ofstream ofs;
+		ofs.open(FILENAME, ios::trunc);
+		ofs.close();
+
+		// 释放内存空间
+		if (this->m_empArray != NULL)
+		{
+			// 清理二级指针
+			for (int i = 0; i < this->m_empNum; i++)
+			{
+				if (this->m_empArray[i] != NULL)
+				{
+					delete this->m_empArray[i];
+					this->m_empArray[i] = NULL;
+				}
+			}
+			// 更新计数器
+			this->m_empNum = 0;
+			// 清理一级指针
+			delete[] this->m_empArray;
+			this->m_empArray = NULL;
+			this->m_fileIsEmpty = true;
+		}
+
+		// 提示
+		cout << "数据清理成功！" << endl;
+	}
+	else
+	{
+		cout << "操作已取消！" << endl;
+	}
+
+	system("pause");
+	system("cls");
+}
